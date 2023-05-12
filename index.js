@@ -6,10 +6,14 @@ const port = process.env.PORT || 4000
 const cors = require('cors');
 app.use(cors())
 app.use(express.json())
+const users=require('./data.json')
 
 
 app.get('/', (req, res) => {
   res.send(`<h1 align="center" style="color:#333;font-size:20px;margin:10px 0;">Cars Doctor Server Is Runnings</h1>`)
+})
+app.get('/users', (req, res) => {
+  res.send(users)
 })
 
 

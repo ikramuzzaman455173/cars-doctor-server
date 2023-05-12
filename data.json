@@ -1,0 +1,62 @@
+[
+  {
+    "name": "John Doe",
+    "age": 25,
+    "email": "johndoe@email.com",
+    "gender": "Male",
+    "address": {
+      "street": "123 Main St",
+      "city": "Los Angeles",
+      "state": "California",
+      "zip": "90001"
+    }
+  },
+  {
+    "name": "Jane Smith",
+    "age": 34,
+    "email": "janesmith@email.com",
+    "gender": "Female",
+    "address": {
+      "street": "456 1st Ave",
+      "city": "New York",
+      "state": "New York",
+      "zip": "10001"
+    }
+  },
+  {
+    "name": "Mark Johnson",
+    "age": 42,
+    "email": "markjohnson@email.com",
+    "gender": "Male",
+    "address": {
+      "street": "789 Broad St",
+      "city": "Atlanta",
+      "state": "Georgia",
+      "zip": "30303"
+    }
+  },
+  {
+    "name": "Samantha Lee",
+    "age": 29,
+    "email": "samlee@email.com",
+    "gender": "Female",
+    "address": {
+      "street": "321 Cherry St",
+      "city": "Houston",
+      "state": "Texas",
+      "zip": "77002"
+    }
+  },
+  {
+    "name": "Alex Perez",
+    "age": 37,
+    "email": "alexperez@email.com",
+    "gender": "Male",
+    "address": {
+      "street": "654 Pine St",
+      "city": "San Francisco",
+      "state": "California",
+      "zip": "94103"
+    }
+  }
+]
