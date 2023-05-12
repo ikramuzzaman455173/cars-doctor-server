@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express()
 require('dotenv').config()
-const { MongoClient, ServerApiVersion,ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 4000
 const cors = require('cors');
 app.use(cors())
@@ -28,26 +28,59 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const carsCollection = client.db("carsDoctor").collection('services');
+    const bookingCollection = client.db("carsDoctor").collection('bookings');
 
     app.get('/services', async (req, res) => {
       const result = await carsCollection.find({}).toArray();
       res.send(result)
     })
 
-    app.get('/services/:id',async (req,res) => {
+    app.get('/services/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const options = {
-        projection: { title: 1,service_id:1,img:1,price:1,description:1},
+        projection: { title: 1, service_id: 1, img: 1, price: 1, description: 1 },
       };
-      const carsService = await carsCollection.findOne(query,options);
+      const carsService = await carsCollection.findOne(query, options);
       res.send(carsService)
     })
 
+    app.get('/bookings', async (req, res) => {
+      let query = {}
+      if (req.query?.email) {
+        query ={email:req.query.email}
+      }
+      const result = await bookingCollection.find(query).toArray()
+      res.send(result)
+    })
 
+    app.post('/bookings', async (req, res) => {
+      const booking = req.body
+      // console.log(booking);
+      const result = await bookingCollection.insertOne(booking);
+      res.send(result)
+    })
 
+    app.delete('/bookings/:id',async (req,res) => {
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) }
+      const result = await bookingCollection.deleteOne(query);
+      res.send(result)
+    })
 
-
+    app.patch('/bookings/:id', async (req, res) => {
+      const id = req.params.id
+      const filter={_id:new ObjectId(id)}
+      const updateBooking = req.body
+      console.log(updateBooking);
+      const updateBookIngData = {
+        $set: {
+          status:updateBooking.status
+        },
+      };
+      const result = await bookingCollection.updateOne(filter, updateBookIngData);
+      res.send(result)
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
