@@ -30,7 +30,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const carsCollection = client.db("carsDoctor").collection('services');
     const bookingCollection = client.db("carsDoctor").collection('bookings');
 
@@ -101,3 +101,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Crud Server Is Running On Port:http://localhost:${port}`);
 })
+
