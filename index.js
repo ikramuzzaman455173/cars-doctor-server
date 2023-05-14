@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express()
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 4000
@@ -27,6 +28,24 @@ const client = new MongoClient(uri, {
   }
 });
 
+const varifyJwt = (req, res, next) => {
+  console.log('hitting varify jwt');
+  const authorization=req.headers.authorization
+  // console.log(authorization);
+  if (!authorization) {
+    return res.status(401).send({error:true,message:'Unauthorized Access'})
+  }
+  const token = authorization.split(' ')[1]
+  // console.log(token);
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).send({error:true,message:'Unauthorized Access'})
+    }
+    rew.decoded = decoded
+    next()
+   })
+}
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -34,6 +53,15 @@ async function run() {
     const carsCollection = client.db("carsDoctor").collection('services');
     const bookingCollection = client.db("carsDoctor").collection('bookings');
 
+    //jwt tokens routes
+    app.post('/jwt', (req, res) => {
+      const user = req.body
+      console.log(user);
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+      res.send({token})
+    })
+
+    //Services Routes
     app.get('/services', async (req, res) => {
       const result = await carsCollection.find({}).toArray();
       res.send(result)
@@ -49,8 +77,10 @@ async function run() {
       res.send(carsService)
     })
 
-    app.get('/bookings', async (req, res) => {
+    //Bookings Routes
+    app.get('/bookings',varifyJwt, async (req, res) => {
       let query = {}
+      // console.log(req.headers.authorization);
       if (req.query?.email) {
         query ={email:req.query.email}
       }
@@ -101,5 +131,4 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Crud Server Is Running On Port:http://localhost:${port}`);
 })
-
 
