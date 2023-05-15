@@ -7,7 +7,8 @@ const port = process.env.PORT || 4000
 const cors = require('cors');
 app.use(cors())
 app.use(express.json())
-const users=require('./data.json')
+const users=require('./data.json');
+const decode = require('jsonwebtoken/decode');
 
 
 app.get('/', (req, res) => {
@@ -37,11 +38,11 @@ const varifyJwt = (req, res, next) => {
   }
   const token = authorization.split(' ')[1]
   // console.log(token);
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+  jwt.verify(token,process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
       return res.status(403).send({error:true,message:'Unauthorized Access'})
     }
-    rew.decoded = decoded
+    req.decoded = decoded
     next()
    })
 }
@@ -78,7 +79,12 @@ async function run() {
     })
 
     //Bookings Routes
-    app.get('/bookings',varifyJwt, async (req, res) => {
+    app.get('/bookings', varifyJwt, async (req, res) => {
+      const decoded =req.decoded
+      console.log('come back after varify', decoded);
+      if (decoded.email !== req.query.email) {
+        return res.status(403).send({error:1,message:'Forbidden Accessed'})
+      }
       let query = {}
       // console.log(req.headers.authorization);
       if (req.query?.email) {
@@ -131,4 +137,3 @@ run().catch(console.dir);
 app.listen(port, () => {
   console.log(`Crud Server Is Running On Port:http://localhost:${port}`);
 })
-
